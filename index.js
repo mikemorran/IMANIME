@@ -14,4 +14,8 @@ let io = require('socket.io')(server);
 // Listen for Individual Connection
 io.sockets.on('connection', function(socket) {
     console.log ('New client: ' + socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected: ' + socket.id);
+    });
 });
