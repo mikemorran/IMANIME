@@ -11,7 +11,9 @@ let loginRunning = true;
 let availableInstruments;
 let availableColors;
 let userObject;
-
+let serial;                             // variable to hold an instance of the serialport library
+let portName = '/dev/tty.usbmodem2101';  // fill in your serial port name here
+let inData;                             // for incoming serial data
 
 function loginProtocol() {
   let beginLogin = true;
@@ -57,9 +59,39 @@ function setup() {
   canvas.parent('CanvasDiv');
   background(0);
   setupGrid();
-
   loginProtocol();
+  
+  //ADDED SERIAL CONNECTION CODE
+  try {
+    serial = new p5.SerialPort();       // make a new instance of the serialport library
+    serial.on('data', serialEvent);     // callback for when new data arrives
+    serial.open(portName);              // open a serial port
+  } catch {
+    console.log('no serial controller found');
+  }
 }
+
+function serialEvent() {
+  // read a byte from the serial port, convert it to a number:
+  inData = serial.readLine();
+}
+
+let buttonPushed = false;
+
+function draw() {
+  //console.log(inData);
+  if (inData === '1' && !buttonPushed) {
+    console.log('button pressed!');
+    buttonPushed = true;
+    mouseClicked();
+  }
+  if (inData === '0' && buttonPushed) {
+    console.log('button released!');
+    buttonPushed = false;
+  }
+}
+//END SERIAL CONNECTION CODE
+
 
 function setupGrid() {
   strokeWeight(3);
@@ -84,6 +116,8 @@ function setupGrid() {
     line(windowWidth*0.1, i*windowHeight/10, windowWidth, i*windowHeight/10);
   }
 }
+
+
 
 function mouseClicked(){
   if (!loginRunning) {

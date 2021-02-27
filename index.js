@@ -20,7 +20,7 @@ io.sockets.on('connection', function(socket) {
     let socketObject = [socket.id];
     // console.log(serverObject);
     socket.on("beginLogin", (beginLogin) => {
-        console.log(beginLogin);
+        // console.log(beginLogin);
         let serverObject = {
             "availableColors" : availColors,
             "availableInstruments" : availInstruments,
